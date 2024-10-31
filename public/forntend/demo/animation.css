@@ -1,0 +1,215 @@
+.stm_listing_tabs_style_2 .stm_listing_nav_list li a:after,
+.stm_listing_icon_filter .stm_listing_icon_filter_single .inner .image,
+.stm_icon_filter_label,
+.stm_listing_icon_filter .stm_listing_icon_filter_single .inner img,
+.header-listing .listing_add_cart > div,
+.stm-site-preloader:after,
+.stm-site-preloader:before,
+.header-service .bloglogo img,
+.service-mobile-menu-trigger span,
+.header-service,
+.stm-image-links .stm-image-link .inner img,
+.stm-filter-chosen-units-list
+.stm-ajax-row:before,
+.stm-ajax-row:after,
+.stm-sell-a-car-form .form-navigation .form-navigation-unit .number,
+.stm-sell-a-car-form .form-navigation .form-navigation-unit.validated .number:before,
+#animated-blog-wrapper .title,
+.vc_toggle .vc_toggle_icon:after,
+.mobile-menu-holder .header-menu > li .arrow i,
+.header-help-bar-trigger i,
+.media-carousel-item .stm_fancybox:after,
+.select2-results__options li,
+.modern-filter-badges .stm-filter-chosen-units-list,
+.stm-modern-filter-unit-images .stm-single-unit-image .image,
+.product-title,
+.stm-shop-sidebar-area .widget > ul > li > a:hover:before,
+.post-grid-single-unit .title,
+.widget_archive .select2-container--default .select2-selection--single .select2-selection__arrow:after,
+#main .widget_search form.search-form:before,
+.stm-accordion-single-unit > a.title h5,
+.stm-accordion-single-unit > a.title .minus,
+.stm-accordion-single-unit > a.title .minus:after,
+.certified-logo-1,
+.certified-logo-2,
+.listing-list-loop .title,
+.icon-box .icon-text .content span, .icon-box .icon-text .content p,
+.stm-compare-car-img:after,
+.compare-col-stm-empty .image img,
+.remove-from-compare,
+.stm-call-to-action-1 .stm-call-action-right .stm-call-action-right-banner,
+.stm-call-action-right-banner,
+.compare-col-stm-empty .h5,
+.compare-col-stm-empty > a:hover .h5,
+.compare-col-stm-empty .image .stm-icon-car_search,
+.compare-col-stm-empty .image:hover .stm-icon-car_search,
+.brands-carousel-item-inner,
+.single-add-to-compare,
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="search"],
+input[type="password"],
+textarea,
+.wpb_tour_tabs_wrapper.ui-tabs ul.wpb_tabs_nav > li > a:before,
+.vc_tta-container .vc_tta-tabs .vc_tta-tabs-container .vc_tta-tabs-list .vc_tta-tab:before,
+.stm-thumbs-car-gallery .owl-item:after,
+.modal-open #wrapper,
+.team-info,
+.stm-our-team .image:before,
+.stm-our-team .meta,
+.stm-our-team .meta .name, .stm-our-team .meta .position,
+.owl-prev, .owl-next,
+.vc_tta-icon,
+.load-more-btn,
+.car-listing-actions,
+.stm-owl-next,
+.stm-owl-prev,
+.icon-box-bottom-triangle,
+.icon-box:before,
+.home-slider .tp-bullet,
+.fancy-iframe,
+a,
+.ajax-loader,
+.global-alerts,
+.stm-ajax-row,
+.stm-ajax-row:before,
+.calculator-alert {
+   -webkit-transition: all 0.25s ease;
+   -moz-transition: all 0.25s ease;
+   -o-transition: all 0.25s ease;
+   transition: all 0.25s ease;
+}
+
+/*.stm_listing_icon_filter .stm_listing_icon_filter_single .inner .name {*/
+   /*-webkit-transition: max-height 0.25s ease;*/
+   /*-moz-transition: max-height 0.25s ease;*/
+   /*-o-transition: max-height 0.25s ease;*/
+   /*transition: max-height 0.25s ease;*/
+/*}*/
+
+.modern-filter-badges.activated,
+.modern-filter-badges {
+	-webkit-transition: all 1s ease;
+   -moz-transition: all 1s ease;
+   -o-transition: all 1s ease;
+   transition: all 1s ease;
+}
+
+.stm-blackout-overlay {
+   -webkit-transition: visiblity 0.25s ease;
+   -moz-transition: visiblity 0.25s ease;
+   -o-transition: visiblity 0.25s ease;
+   transition: visiblity 0.25s ease;
+}
+
+.widget_archive .select2-container--default .select2-selection--single .select2-selection__arrow b,
+#main .widget_search form.search-form:after {
+   -webkit-transition: all 0.25s ease;
+   -moz-transition: all 0.25s ease;
+   -o-transition: all 0.25s ease;
+   transition: all 0.25s ease 0.1s;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+   -webkit-transition: transform 0.25s ease;
+   -moz-transition: transform 0.25s ease;
+   -o-transition: transform 0.25s ease;
+   transition: transform 0.25s ease;
+}
+
+.icon-box:before:hover {
+   -webkit-transition: all 0.25s cubic-bezier(0.2, 1, 0.3, 1);
+   -moz-transition: all 0.25s cubic-bezier(0.2, 1, 0.3, 1);
+   -o-transition: all 0.25s cubic-bezier(0.2, 1, 0.3, 1);
+   transition: all 0.25s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.header-nav.header-nav-transparent {
+   -webkit-transition: background-color 0.25s ease;
+   -moz-transition: background-color 0.25s ease;
+   -o-transition: background-color 0.25s ease;
+   transition: background-color 0.25s ease;
+}
+
+/*No transition*/
+.stm_listing_icon_filter .stm_listing_icon_filter_single,
+.stm-button,
+.load-more-btn,
+.button,
+.select2-container--default .select2-selection--single .select2-selection__arrow b.stm-preloader {
+   -webkit-transition: all 0s ease;
+   -moz-transition: all 0s ease;
+   -o-transition: all 0s ease;
+   transition: all 0s ease;
+}
+
+@-webkit-keyframes rotating {
+   0% {
+      -webkit-transform: rotate(0deg);
+   }
+   20% {
+      -webkit-transform: rotate(90deg);
+   }
+   50% {
+      -webkit-transform: rotate(180deg);
+   }
+   75% {
+      -webkit-transform: rotate(270deg);
+   }
+   100% {
+      -webkit-transform: rotate(360deg);
+   }
+}
+
+@keyframes rotating {
+   0% {
+      transform: rotate(0deg);
+   }
+   20% {
+      transform: rotate(90deg);
+   }
+   50% {
+      transform: rotate(180deg);
+   }
+   75% {
+      transform: rotate(270deg);
+   }
+   100% {
+      transform: rotate(360deg);
+   }
+}
+
+.car-action-unit.add-to-compare.stm-added .stm-unhover,
+.car-action-unit.add-to-compare.stm-added:hover .stm-show-on-hover {
+   -webkit-transition: opacity 0.25s ease;
+   -moz-transition: opacity 0.25s ease;
+   -o-transition: opacity 0.25s ease;
+   transition: opacity 0.4s ease 0.1s;
+}
+
+.car-action-unit.add-to-compare.stm-added:hover .stm-unhover,
+.car-action-unit.add-to-compare.stm-added .stm-show-on-hover {
+   -webkit-transition: opacity 0.4s ease 0s;
+   -moz-transition: opacity 0.4s ease 0s;
+   -o-transition: opacity 0.4s ease 0s;
+   transition: opacity 0.4s ease 0s;
+}
+
+
+/* Menu transition */
+.main-menu .header-menu > li > ul li > ul,
+.main-menu .header-menu > li > ul {
+	-webkit-transition: all 0s ease;
+   -moz-transition: all 0s ease;
+   -o-transition: all 0s ease;
+   transition: all 0s ease;
+}
+
+.main-menu .header-menu > li > ul li:hover > ul,
+.main-menu .header-menu > li:hover > ul {
+	-webkit-transition: all 0.25s ease;
+   -moz-transition: all 0.25s ease;
+   -o-transition: all 0.25s ease;
+   transition: all 0.25s ease;
+}

@@ -1,0 +1,67 @@
+/*
+	Theme Name: Motors Child
+	Theme URI: http://stylemixthemes.com/
+	Description: Motors Child Theme
+	Author: StylemixThemes
+	Author URI: http://stylemixthemes.com/
+	Template: motors
+	Version: 1.0
+	License: GNU General Public License v2 or later
+	License URI: http://www.gnu.org/licenses/gpl-2.0.html
+	Tags: blue, black, red, dark, one-column, two-columns, three-columns, four-columns, left-sidebar, right-sidebar, fixed-layout, fluid-layout, responsive-layout, flexible-header, custom-background, custom-colors, custom-header, custom-menu, editor-style, sticky-post, theme-options
+	Text Domain: motors-child
+*/
+
+/* Add your own styles here */
+
+.home .vc_custom_1459249511896{
+background-image: url(https://www.zoomrentacar.com.bd/wp-content/uploads/2015/09/first-parallax-block.jpg) !important;
+}
+.home .vc_custom_1459251994136{
+background-image: url(https://www.zoomrentacar.com.bd/wp-content/uploads/2015/09/second-parallax-block.jpg) !important;
+}
+
+.bloglogo img{width: auto!important;}
+
+.help-bar-compare, .found-cars-cloned, .stm-listing-tabs{display: none!important;}
+.car-listing-tabs-unit .car-listing-top-part{padding-bottom: 20px;}
+.mobile-menu-icon{
+color: #fff;
+    float: right;
+    font-size: 20px;
+    position: relative;
+    top: 8px;
+    left: 20px;
+}
+.car-meta-bottom, .home .dp-in {display: none;}
+
+.book-now-button{
+background-color: #232628;
+    color: #fff;
+    padding: 5px;
+    display: inline-block;
+    margin-top: 8px;
+    text-decoration: none!important;
+}
+.footer-contact-form input[type="text"], .footer-contact-form input[type="tel"], .footer-contact-form input[type="email"]{
+    height: 28px;
+    line-height: 26px;
+}
+.footer-contact-form textarea{
+height: 60px;
+    padding: 10px 21px;
+}
+.footer-contact-form input[type=submit]{
+padding: 10px!important;
+}
+
+@media (max-width:767px){
+body .vc_custom_1459783345392 {
+    padding-top: 75px !important;
+    padding-bottom: 75px!important;
+}
+}
+
+span.mobile-menu-icon.visible-sm.visible-xs {
+    visibility: hidden;
+}

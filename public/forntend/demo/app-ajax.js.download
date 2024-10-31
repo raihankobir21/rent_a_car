@@ -1,0 +1,764 @@
+(function($) {
+    "use strict";
+
+    var stm_single_filter_link = false;
+
+
+    $(document).ready(function () {
+        //AJAX functions
+        stm_ajax_classic_filter();
+        stm_ajax_classic_filter_price();
+        //stm_classic_filter_remove_hidden();
+        stm_ajax_add_to_compare();
+        stm_ajax_remove_from_compare();
+        stm_ajax_filter_remove_hidden();
+        stm_ajax_add_test_drive();
+        stm_ajax_get_car_price();
+        clearFilter();
+        stm_filter_links();
+
+        //Isotope
+        stm_sort_listing_cars();
+        stm_modern_filter_isotope();
+
+        //Clear select value from listing badge
+        $('body').on('click', '#modern-filter-listing .stm-clear-listing-one-unit', function(){
+            var selectToClear = $(this).data('select');
+            if(typeof selectToClear != 'undefined') {
+                if (selectToClear != 'price' && $('select[name=' + selectToClear + ']').length > 0) {
+                    $('select[name=' + selectToClear + ']').select2('val', '');
+                } else {
+                    if ($('.filter-price').length > 0) {
+
+                        $('.stm-price-range').slider('values', [stmOptions.min, stmOptions.max]);
+
+                        $("#stm_filter_min_price").val(stmOptions.min);
+                        $("#stm_filter_max_price").val(stmOptions.max);
+                    }
+                }
+            }
+
+        });
+
+        $('body').on('click', '.stm-clear-listing-one-unit-classic', function(){
+            var selectToClear = $(this).data('select');
+            var clearLinkArg = $(this).data('url');
+            if(typeof selectToClear != 'undefined') {
+                if (selectToClear != 'price' && $('select[name=' + selectToClear + ']').length > 0) {
+                    window.location = clearLinkArg;
+                } else {
+                    if ($('.filter-price').length > 0) {
+
+                        $('.stm-price-range').slider('values', [stmOptions.min, stmOptions.max]);
+
+                        $("#stm_filter_min_price").val(stmOptions.min);
+                        $("#stm_filter_max_price").val(stmOptions.max);
+                        $('.classic-filter-row form').submit();
+                    }
+                }
+            }
+
+        });
+
+        $('#stm-classic-filter-submit').click(function(){
+            //stm_single_filter_link = false;
+        })
+    });
+
+
+    //Classic filter ajax request
+    function stm_ajax_classic_filter() {
+        $('.classic-filter-row .filter-sidebar select').select2().on('change', function(){
+
+            if(!stm_single_filter_link) {
+                $('#stm-filter-links-input').val('');
+            }
+
+            $.ajax({
+                url: ajaxurl,
+                dataType: 'json',
+                context: this,
+                data: $(this).closest('form').serialize() + '&action=stm_ajax_filter',
+                beforeSend: function(){
+                    $('.stm-ajax-row').addClass('stm-loading');
+                    $('.classic-filter-row .filter-sidebar .select2-container--default .select2-selection--single .select2-selection__arrow b').addClass('stm-preloader');
+                },
+                success: function (data) {
+                    /*Change select*/
+                    $('.classic-filter-row .filter-sidebar .select2-container--default .select2-selection--single .select2-selection__arrow b').removeClass('stm-preloader');
+                    $('.classic-filter-row .filter-sidebar select').prop("disabled", false);
+
+                    if(typeof data.binding != 'undefined'){
+                        for(var key in data.binding) {
+                            if(data.binding.hasOwnProperty(key)) {
+                                var obj = data.binding[key];
+                                $('select[name=' + key + '] > option').each(function(){
+                                    var opt_val = $(this).val();
+                                    $(this).removeAttr('disabled');
+                                    if(opt_val != '') {
+                                        if (!obj.hasOwnProperty(opt_val)) {
+                                            $(this).attr('disabled', '1');
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    }
+
+                    $('.classic-filter-row .filter-sidebar select').select2("destroy");
+
+                    $('.classic-filter-row .filter-sidebar select').select2();
+                    /*Change content*/
+                    $('.filter.stm-vc-ajax-filter select').prop("disabled", false);
+                    if(typeof data.html != 'undefined') {
+                        $('.stm-ajax-row .stm-isotope-sorting').html(data.html);
+
+                        var sortVal = $('.stm-select-sorting select').select2('val');
+
+                        $('.stm-ajax-row').removeClass('stm-loading');
+                    }
+
+                    if(typeof data.pagination != 'undefined'){
+                        $('.stm-ajax-pagination').html(data.pagination);
+                    }
+
+                    if(typeof data.badges != 'undefined'){
+                        $('.stm-filter-chosen-units').html(data.badges);
+                    }
+
+                    $container.isotope('reloadItems').isotope();
+
+                    $("img.lazy").lazyload();
+
+                    window.history.pushState('','',data.url);
+                }
+            });
+        });
+    }
+    function stm_ajax_classic_filter_price() {
+        $(".classic-filter-row .stm-price-range").on('slidestop', function (event, ui) {
+            $.ajax({
+                url: ajaxurl,
+                dataType: 'json',
+                context: this,
+                data: $(this).closest('form').serialize() + '&action=stm_ajax_filter',
+                beforeSend: function(){
+                    $('.stm-ajax-row').addClass('stm-loading');
+                },
+                success: function (data) {
+                    /*Change content*/
+                    $('.filter.stm-vc-ajax-filter select').prop("disabled", false);
+                    if(typeof data.html != 'undefined') {
+                        $('.stm-ajax-row .stm-isotope-sorting').html(data.html);
+
+                        var sortVal = $('.stm-select-sorting select').select2('val');
+
+                        $('.stm-ajax-row').removeClass('stm-loading');
+                    }
+
+                    if(typeof data.pagination != 'undefined'){
+                        $('.stm-ajax-pagination').html(data.pagination);
+                    }
+
+                    if(typeof data.badges != 'undefined'){
+                        $('.stm-filter-chosen-units').html(data.badges);
+                    }
+
+                    //$container.isotope('reloadItems').isotope();
+
+                    $("img.lazy").lazyload();
+
+                    window.history.pushState('','',data.url);
+                }
+            });
+        });
+    }
+
+    function stm_ajax_filter_remove_hidden() {
+        $('.filter.stm-vc-ajax-filter select').select2().on('change', function(){
+            $.ajax({
+                url: ajaxurl,
+                dataType: 'json',
+                context: this,
+                data: $(this).closest('form').serialize() + '&action=stm_ajax_filter_remove_hidden',
+                beforeSend: function(){
+                    $('.filter.stm-vc-ajax-filter select').prop("disabled", true);
+                    $('.select2-container--default .select2-selection--single .select2-selection__arrow b').addClass('stm-preloader');
+                },
+                success: function (data) {
+                    $('.select2-container--default .select2-selection--single .select2-selection__arrow b').removeClass('stm-preloader');
+                    $('.filter.stm-vc-ajax-filter select').prop("disabled", false);
+
+                    if(typeof data.binding != 'undefined'){
+                        for(var key in data.binding) {
+                            if(data.binding.hasOwnProperty(key)) {
+                                var obj = data.binding[key];
+                                $('select[name=' + key + '] > option').each(function(){
+                                    var opt_val = $(this).val();
+                                    $(this).removeAttr('disabled');
+                                    if(opt_val != '') {
+                                        if (!obj.hasOwnProperty(opt_val)) {
+                                            $(this).attr('disabled', '1');
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    }
+
+                    $('.filter.stm-vc-ajax-filter select').select2("destroy");
+
+                    $('.filter.stm-vc-ajax-filter select').select2();
+                }
+            });
+            return false;
+        });
+    };
+
+    function stm_ajax_add_to_compare() {
+        $(document).on('click', '.add-to-compare', function(e){
+            e.preventDefault();
+            var dataId = $(this).attr('data-id');
+            var dataAction = $(this).attr('data-action');
+            if(typeof dataAction == 'undefined') {
+                dataAction = 'add';
+            }
+            var stm_timeout;
+            if(typeof dataId != 'undefined') {
+                $.ajax({
+                    url: ajaxurl,
+                    type: "POST",
+                    dataType: 'json',
+                    data: '&post_id=' + dataId + '&post_action=' + dataAction + '&action=stm_ajax_add_to_compare',
+                    context: this,
+                    beforeSend: function (data) {
+                        $(this).addClass('disabled');
+                        clearTimeout(stm_timeout);
+                    },
+                    success: function (data) {
+                        $(this).removeClass('disabled');
+                        clearTimeout(stm_timeout);
+                        $('.single-add-to-compare').addClass('single-add-to-compare-visible');
+                        if(typeof data.response != 'undefined') {
+                            $('.single-add-to-compare .stm-title').text(data.response);
+                        }
+                        if(typeof data.length != 'undefined') {
+                            $('.stm-current-cars-in-compare').text(data.length);
+                        }
+                        stm_timeout = setTimeout(function(){
+                            $('.single-add-to-compare').removeClass('single-add-to-compare-visible');
+                        }, 5000);
+                        if(data.status != 'danger') {
+                            if (dataAction == 'remove') {
+                                $(this).removeClass('stm-added');
+                                $(this).html('<i class="stm-icon-add"></i>' + data.add_to_text);
+                                $(this).removeClass('hovered');
+                                $(this).attr('data-action', 'add');
+                            } else {
+                                $(this).addClass('stm-added');
+                                $(this).html('<i class="stm-icon-added stm-unhover"></i><span class="stm-unhover">' + data.in_com_text + '</span><div class="stm-show-on-hover"><i class="stm-icon-remove"></i>' + data.remove_text + '</div>');
+                                $(this).removeClass('hovered');
+                                $(this).attr('data-action', 'remove');
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function stm_ajax_remove_from_compare() {
+        $(document).on('click', '.remove-from-compare', function(e){
+            e.preventDefault();
+            var dataId = $(this).attr('data-id');
+            var dataAction = $(this).attr('data-action');
+            if(typeof dataId != 'undefined') {
+                $.ajax({
+                    url: ajaxurl,
+                    type: "POST",
+                    dataType: 'json',
+                    data: '&post_id=' + dataId + '&post_action=' + dataAction + '&action=stm_ajax_add_to_compare',
+                    context: this,
+                    beforeSend: function (data) {
+                        $(this).addClass('loading');
+                        if(parseFloat($('.stm-current-cars-in-compare').text()) > 0) {
+                            $('.stm-current-cars-in-compare').text(parseFloat($('.stm-current-cars-in-compare').text()) - 1);
+                        }
+                        $('.car-listing-row .compare-col-stm-' + dataId).hide('slide', {direction: 'left'}, function(){
+                            $('.car-listing-row .compare-col-stm-' + dataId).remove();
+                            $('.car-listing-row').append($('.compare-empty-car-top').html());
+                        });
+                        $('.stm-compare-row .compare-col-stm-' + dataId).hide('slide', {direction: 'left'}, function(){
+                            $('.stm-compare-row .compare-col-stm-' + dataId).remove();
+                            $('.stm-compare-row').append($('.compare-empty-car-bottom').html());
+                        });
+                        $('.row-compare-features .compare-col-stm-' + dataId).hide('slide', {direction: 'left'}, function(){
+                            $('.row-compare-features .compare-col-stm-' + dataId).remove();
+                            if($('.row-compare-features .col-md-3').length < 2) {
+                                $('.row-compare-features').slideUp();
+                            }
+                        });
+                    },
+                });
+            }
+        });
+    }
+
+    function stm_ajax_add_test_drive() {
+        $('#test-drive form').on("submit", function(event){
+            event.preventDefault();
+            $.ajax({
+                url: ajaxurl,
+                type: "POST",
+                dataType: 'json',
+                context: this,
+                data: $( this ).serialize() + '&action=stm_ajax_add_test_drive',
+                beforeSend: function(){
+                    $('.alert-modal').remove();
+                    $(this).closest('form').find('input').removeClass('form-error');
+					$(this).closest('form').find('.stm-ajax-loader').addClass('loading');
+                },
+                success: function (data) {
+					$(this).closest('form').find('.stm-ajax-loader').removeClass('loading');
+                    $(this).closest('form').find('.modal-body').append('<div class="alert-modal alert alert-'+ data.status +' text-left">' + data.response + '</div>')
+                    for(var key in data.errors) {
+                        $('#request-test-drive-form input[name="' + key + '"]').addClass('form-error');
+                    }
+                }
+            });
+            $(this).closest('form').find('.form-error').live('hover', function () {
+                $(this).removeClass('form-error');
+            });
+        });
+    }
+    
+    function stm_ajax_get_car_price() {
+        $('#get-car-price form').on("submit", function(event){
+            event.preventDefault();
+            $.ajax({
+                url: ajaxurl,
+                type: "POST",
+                dataType: 'json',
+                context: this,
+                data: $( this ).serialize() + '&action=stm_ajax_get_car_price',
+                beforeSend: function(){
+                    $('.alert-modal').remove();
+                    $(this).closest('form').find('input').removeClass('form-error');
+                    $(this).closest('form').find('.stm-ajax-loader').addClass('loading');
+                },
+                success: function (data) {
+                    $(this).closest('form').find('.stm-ajax-loader').removeClass('loading');
+                    $(this).closest('form').find('.modal-body').append('<div class="alert-modal alert alert-'+ data.status +' text-left">' + data.response + '</div>')
+                    for(var key in data.errors) {
+                        $('#get-car-price input[name="' + key + '"]').addClass('form-error');
+                    }
+                }
+            });
+            $(this).closest('form').find('.form-error').live('hover', function () {
+                $(this).removeClass('form-error');
+            });
+        });
+    }
+
+    function clearFilter() {
+        $('.reset-all').click(function(e){
+            e.preventDefault();
+            $(this).closest('.filter').find('select').each(function(){
+                $(this).select2('val', '');
+            })
+            if($('.filter-price').length > 0) {
+
+                $('.stm-price-range').slider( 'values', [ stmOptions.min, stmOptions.max ] );
+
+                $("#stm_filter_min_price").val(stmOptions.min);
+                $("#stm_filter_max_price").val(stmOptions.max);
+            }
+            //$(this).closest('.classic-filter-row').find('#stm-classic-filter-submit').trigger('click');
+        });
+    }
+
+    var stmIsotope;
+    var $container = $('.stm-isotope-sorting');
+
+    function stm_sort_listing_cars() {
+        // init Isotope
+        if($('.stm-isotope-sorting').length) {
+            if (typeof imagesLoaded == 'function') {
+                $('.stm-isotope-sorting').imagesLoaded(function() {
+                    stmIsotope = $container.isotope({
+                        itemSelector: '.stm-isotope-listing-item',
+                        layoutMode: 'fitRows',
+                        hiddenStyle: {
+                            opacity: 0
+                        },
+                        visibleStyle: {
+                            opacity: 1
+                        },
+                        transitionDuration: '0.5s',
+                        getSortData: {
+                            price: function (itemElem) {
+                                var price = $(itemElem).data('price');
+                                return parseFloat(price);
+                            },
+                            date: function (itemElem) {
+                                var date = $(itemElem).data('date');
+                                return parseFloat(date);
+                            },
+                            mileage: function (itemElem) {
+                                var mileage = $(itemElem).data('mileage');
+                                return parseFloat(mileage);
+                            }
+                        }
+                    });
+                });
+
+            }
+            $('.stm-select-sorting select').select2().on('change', function(){
+                stm_isotope_sort_function($(this).select2('val'));
+            })
+
+
+        }
+    }
+
+    function stm_modern_filter_isotope() {
+
+        if($('#modern-filter-listing').length > 0) {
+
+            $('body').on('click', '.modern-filter-badges ul li i', function(){
+                var tab_reset = $(this).data('select');
+                if(tab_reset == 'price') {
+
+                    $('.stm-price-range').slider( 'values', [ stmOptions.min, stmOptions.max ] );
+
+                    $("#stm_filter_min_price").val(stmOptions.min);
+                    $("#stm_filter_max_price").val(stmOptions.max);
+
+                    stmIso.isotope({
+                        filter: function () {
+                            var itemPrice = $(this).data('price');
+
+                            return parseInt(itemPrice, 10) >= stmOptions.min && parseInt(itemPrice, 10) <= stmOptions.max;
+                        }
+                    })
+
+                    price_string = '<li><span>Price:</span> ' + stmOptions.min + ' - ' + stmOptions.max;
+                    price_string += '<i class="fa fa-close stm-clear-listing-one-unit" data-select="price"></i></li>';
+                    $(this).closest('li').remove();
+                } else {
+                    $('#' + tab_reset + ' input[type=checkbox]').each(function () {
+                        if ($(this).prop('checked')) {
+                            $(this).trigger('click');
+                        }
+                    })
+                }
+
+                
+                /*Number of filtered*/
+                if(typeof stmIsotope != 'undefined') {
+                    var stmIsoData = stmIsotope.data('isotope');
+                    if(typeof stmIsoData != 'undefined') {
+                        if(typeof stmIsoData.filteredItems != 'undefined') {
+                            $('.stm-modern-filter-found-cars span').text(stmIsoData.filteredItems.length);
+                        }
+                    }
+                }
+            })
+
+            var stmSortClasses = '';
+            var main_string = '';
+            var price_string = '';
+            var string = '';
+            var stmIso = $('.stm-isotope-sorting');
+            var stmFilterGroups = {};
+
+            /*Checkbox clicked, filter*/
+            $('#modern-filter-listing input[type=checkbox]').click(function () {
+                var badges = {};
+                var badges_reset = {};
+                stmFilterGroups = {};
+                $(window).scroll();
+                var stmFirst = 0;
+                stmSortClasses = '';
+                var numberOfCats = 0;
+
+                $('#modern-filter-listing input[type=checkbox]').each(function () {
+                    var stmChecked = $(this).prop('checked');
+                    var stmCurrentClass = $(this).attr('name');
+                    var stmBadgeValue = $(this).data('name');
+                    var stmBadgeId = $(this).closest('.content').attr('id');
+
+
+                    var stmFilterCurrentGroup = $(this).closest('.collapse').attr('id');
+
+                    if (stmChecked) {
+                        var tab = $(this).closest('.stm-accordion-single-unit').find('.title h5').text();
+                        if(typeof badges[tab] == 'undefined') {
+                            badges[tab] = [];
+                        }
+                        if(typeof badges_reset[tab] == 'undefined') {
+                            badges_reset[tab] = '';
+                        }
+                        badges[tab].push(stmBadgeValue);
+                        badges_reset[tab] = stmBadgeId;
+
+
+                        if (stmFirst == 0) {
+                            stmSortClasses += '.' + stmCurrentClass;
+                        } else {
+                            stmSortClasses += '.' + stmCurrentClass;
+                        }
+                        stmFirst++;
+
+                        if(typeof(stmFilterGroups[stmFilterCurrentGroup]) == 'undefined') {
+                            stmFilterGroups[stmFilterCurrentGroup] = [];
+                        }
+                        stmFilterGroups[stmFilterCurrentGroup].push(stmCurrentClass);
+
+
+                    }
+                    if (stmSortClasses == '') {
+                        stmSortClasses = '.all';
+                    }
+                    
+                })
+
+
+                if ($('.stm-isotope-sorting').length > 0 && stmSortClasses != '') {
+                    var matches = [];
+                    
+                    stmIso.isotope({
+                        filter: function() {
+                            matches = [];
+                            var itemPrice = $(this).data('price');
+                            var minPrice = $('#stm_filter_min_price').val();
+                            var maxPrice = $('#stm_filter_max_price').val();
+
+
+                            if(Object.keys(stmFilterGroups).length > 0) {
+                                for (var key in stmFilterGroups) {
+                                    if (stmFilterGroups.hasOwnProperty(key)) {
+                                        for (var k = 0; k < stmFilterGroups[key].length; k++) {
+                                            var match = false;
+                                            if ($(this).hasClass(stmFilterGroups[key][k])) {
+                                                matches[key] = true;
+                                            }
+                                        }
+                                    }
+                                }
+
+
+                                var final_match = false;
+
+                                if (Object.keys(matches).length == Object.keys(stmFilterGroups).length) {
+                                    if (Object.keys(matches).length > 0) {
+                                        for (var m_key in matches) {
+                                            if (matches.hasOwnProperty(m_key)) {
+                                                if (matches[m_key]) {
+                                                    final_match = true;
+                                                } else {
+                                                    final_match = false;
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        final_match = false;
+                                    }
+                                }
+
+
+                                if (final_match) {
+                                    if(typeof minPrice != 'undefined' && typeof maxPrice != 'undefined' && typeof itemPrice != 'undefined') {
+                                        return parseInt(itemPrice, 10) >= minPrice && parseInt(itemPrice, 10) <= maxPrice;
+                                    } else {
+                                        return ($(this));
+                                    }
+                                }
+                            } else {
+                                return ($(this));
+                            }
+
+                        }
+                    })
+                }
+
+
+
+                /*create badge*/
+                string = '';
+
+                for (var key in badges) {
+                    if (badges.hasOwnProperty(key)) {
+                        if(badges.hasOwnProperty(key)) {
+                            string += '<li><span>' + key + ':</span> ' + badges[key].join(', ');
+                            if(badges_reset.hasOwnProperty(key)) {
+                                string += '<i class="fa fa-close stm-clear-listing-one-unit" data-select="' + badges_reset[key] + '"></i>';
+                            }
+                            string += '</li>';
+                            main_string = price_string + string;
+                            $('.modern-filter-badges ul.stm-filter-chosen-units-list').html(main_string);
+                        }
+                    }
+                }
+
+                if($.isEmptyObject(badges)){
+                    main_string = price_string + string;
+                    $('.modern-filter-badges ul.stm-filter-chosen-units-list').html(main_string);
+                };
+                
+                var badges_length = Object.keys(badges).length;
+                
+				if(badges_length > 0) {
+					
+					var badgesWidth = 0;
+					var badgesMargin = 15;
+					var badgesRowWidth = $('.stm-filter-chosen-units-list').outerWidth();
+					
+					$('.stm-filter-chosen-units-list li').each(function(){
+						badgesWidth += $(this).outerWidth();
+					});
+					
+					// Add margins
+					badgesWidth += badgesMargin * (badges_length - 1);
+					
+					var row_number = (badgesWidth/badgesRowWidth) + 1;
+					
+					
+					
+					$('.stm-filter-chosen-units-list').css({
+						height: (parseInt(row_number) * 47) + 'px'
+					});
+					
+				} else {
+					$('.stm-filter-chosen-units-list').css({
+						height: 0
+					});
+				}
+				
+
+                /*Number of filtered*/
+                console.log(stmIsotope);
+                if(typeof stmIsotope != 'undefined') {
+                    var stmIsoData = stmIsotope.data('isotope');
+                    if(typeof stmIsoData != 'undefined') {
+                        if(typeof stmIsoData.filteredItems != 'undefined') {
+                            $('.stm-modern-filter-found-cars span').text(stmIsoData.filteredItems.length);
+                        }
+                    }
+                }
+            })
+
+            $(".stm-price-range").on('slide', function (event, ui) {
+                var minPrice = ui.values[0];
+                var maxPrice = ui.values[1];
+                stmIso.isotope({
+                    filter: function () {
+                        	var matches = [];
+                            var itemPrice = $(this).data('price');
+                            
+                            if(Object.keys(stmFilterGroups).length > 0) {
+                                for (var key in stmFilterGroups) {
+                                    if (stmFilterGroups.hasOwnProperty(key)) {
+                                        for (var k = 0; k < stmFilterGroups[key].length; k++) {
+                                            var match = false;
+                                            if ($(this).hasClass(stmFilterGroups[key][k])) {
+                                                matches[key] = true;
+                                            }
+                                        }
+                                    }
+                                }
+
+
+                                var final_match = false;
+
+                                if (Object.keys(matches).length == Object.keys(stmFilterGroups).length) {
+                                    if (Object.keys(matches).length > 0) {
+                                        for (var m_key in matches) {
+                                            if (matches.hasOwnProperty(m_key)) {
+                                                if (matches[m_key]) {
+                                                    final_match = true;
+                                                } else {
+                                                    final_match = false;
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        final_match = false;
+                                    }
+                                }
+
+
+                                if (final_match) {
+                                    if(typeof minPrice != 'undefined' && typeof maxPrice != 'undefined' && typeof itemPrice != 'undefined') {
+                                        return parseInt(itemPrice, 10) >= minPrice && parseInt(itemPrice, 10) <= maxPrice;
+                                    } else {
+                                        return parseInt(itemPrice, 10) >= minPrice && parseInt(itemPrice, 10) <= maxPrice;
+                                    }
+                                }
+                            } else {
+                                return parseInt(itemPrice, 10) >= minPrice && parseInt(itemPrice, 10) <= maxPrice;
+                            }
+                    }
+                })
+
+                /*Number of filtered*/
+                if(typeof stmIsotope != 'undefined') {
+                    var stmIsoData = stmIsotope.data('isotope');
+                    if(typeof stmIsoData != 'undefined') {
+                        if(typeof stmIsoData.filteredItems != 'undefined') {
+                            $('.stm-modern-filter-found-cars span').text(stmIsoData.filteredItems.length);
+                        }
+                    }
+                }
+
+                price_string = '<li><span>Price:</span> ' + minPrice + ' - ' + maxPrice;
+                price_string += '<i class="fa fa-close stm-clear-listing-one-unit" data-select="price"></i></li>';
+                main_string = price_string + string;
+                $('.modern-filter-badges ul.stm-filter-chosen-units-list').html(main_string);
+                
+                $('.stm-filter-chosen-units-list').height('47');
+            });
+
+        }
+    }
+
+    function stm_filter_links() {
+        $('body').on('click', '.stm-single-filter-link', function(){
+            stm_single_filter_link = true;
+            var stm_name = $(this).data('slug');
+            var stm_value = $(this).data('value');
+            if(typeof stm_name !== 'undefined' && typeof stm_value !== 'undefined') {
+                $('.reset-all').trigger('click');
+                $('#stm-filter-links-input').attr('name', stm_name);
+                $('#stm-filter-links-input').val(stm_value);
+            }
+        })
+    }
+
+})(jQuery);
+
+function loadMoreCars(that,category,taxonomy,offset,per_page) {
+    var $ = jQuery;
+    $.ajax({
+        url: ajaxurl,
+        data: { action: 'stm_ajax_load_more_cars',category:category,taxonomy:taxonomy,offset: offset,per_page: per_page },
+        method: 'POST',
+        dataType: 'json',
+        beforeSend: function(){
+            $(that).addClass('not-visible');
+            $(that).closest('.dp-in').find('.preloader').fadeIn(600);
+        },
+        success: function (data) {
+            $(that).closest('.dp-in').find('.preloader').hide();
+            if(data['content'] && data['appendTo']) {
+                $(data['appendTo'] + ' .car-listing-row').append(data['content']);
+            }
+            if( data['button'] ){
+                $(that).attr('onclick', data['button']).removeClass('not-visible');
+            }else{
+                $(data['appendTo']).find('.car-listing-actions').addClass('all-done');
+                that.parent().text('');
+            }
+        }
+    });
+}
